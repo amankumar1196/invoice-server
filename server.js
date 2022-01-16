@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require("cors");
 const db = require("./app/models");
 const app = express()
-const routes = require('./app/routes/AuthRoutes');
 const initial = require("./seed.js");
 
 db.sequelize.sync({ force: true }).then(() => {
@@ -22,9 +21,8 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", routes)
-// require('./app/routes/AuthRoutes')(app);
-// require('./app/routes/user.routes')(app);
+require('./app/routes/AuthRoutes')(app);
+require('./app/routes/InvoiceRoutes')(app);
 
 app.get('/api/auth/signin', function (req, res) {
   res.send('Hello World')

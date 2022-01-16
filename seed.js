@@ -45,13 +45,31 @@ function initial() {
     clientId: 1
   })
   Invoice.create({
-    name: "Set invoice",
-    status: "send",
+    name: "New Project expense invoice",
+    status: "pending",
     userId: 1,
     clientId: 1
   })
   Invoice.create({
-    name: "Set invoice",
+    name: "UI/UX expense invoice",
+    status: "not_send",
+    userId: 1,
+    clientId: 1
+  })
+  Invoice.create({
+    name: "Project expense invoice",
+    status: "not_send",
+    userId: 1,
+    clientId: 1
+  })
+  Invoice.create({
+    name: "New Project expense invoice",
+    status: "not_send",
+    userId: 1,
+    clientId: 1
+  })
+  Invoice.create({
+    name: "System invoice",
     status: "not_send",
     userId: 1,
     clientId: 1
