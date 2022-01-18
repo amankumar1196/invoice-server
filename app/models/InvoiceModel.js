@@ -13,6 +13,10 @@ module.exports = (sequelize, Sequelize) => {
     },
     clientId: {
       type: Sequelize.INTEGER
+    },
+    registerKey: {
+      type: Sequelize.UUID,
+      allowNull: false
     }
     // due_date: {
     //   type: Sequelize.Da

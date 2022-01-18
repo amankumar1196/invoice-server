@@ -4,10 +4,17 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     phone: {
-      type: Sequelize.INTEGER
+      type: Sequelize.DOUBLE
     },
     email: {
       type: Sequelize.STRING
+    },
+    userId: {
+      type: Sequelize.INTEGER
+    },
+    registerKey: {
+      type: Sequelize.UUID,
+      allowNull: false
     }
   }, {});
 

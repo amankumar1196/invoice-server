@@ -25,12 +25,14 @@ exports.show = (tutorialId) => {
 };
 
 exports.create = async (req, res) => {
+  const { name, invoiceItems, clientId, userId, companyId, registerKey } = req.body
   try {
     const invoice = await Invoice.create({
-      name: req.body.name,
-      clientId: req.body.clientId,
-      userId: 1,
-      invoice_items: req.body.invoiceItems
+      name,
+      clientId,
+      userId,
+      registerKey,
+      invoice_items: invoiceItems
     },{
       include: ["invoice_items"]
     })

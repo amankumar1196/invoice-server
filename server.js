@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 require('./app/routes/AuthRoutes')(app);
 require('./app/routes/InvoiceRoutes')(app);
 require('./app/routes/ClientRoutes')(app);
+require('./app/routes/CompanyRoutes')(app);
 
 app.get('/', function (req, res) {
   res.send('Hello World')

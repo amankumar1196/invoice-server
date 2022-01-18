@@ -26,20 +26,15 @@ exports.show = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  const { name, email, phone, country, state, address_line_1, address_line_2, userId} = req.body;
+  const { name, email, phone, address, userId, registerKey } = req.body;
   try {
     const client = await Client.create({
       name,
       email,
       userId,
       phone,
-      registerClientId,
-      address: {
-        address_line_1,
-        address_line_2,
-        country,
-        state
-      }
+      registerKey,
+      address
     },{
       include: [ "address" ]
     })
@@ -67,8 +62,10 @@ exports.update = (tutorial) => {
 
 exports.delete = async (req, res) => {
   try {
-    const client = await Client.destroy({ where: { id: req.params.id } },{returning: true})
-    res.status(200).send({id: client});
+    const id = req.params.id
+    const client = await Client.findByPk(id)
+    await Client.destroy({ where: { id } })
+    res.status(200).send(client);
 
   } catch (err) {
     res.status(500).send(err.message);

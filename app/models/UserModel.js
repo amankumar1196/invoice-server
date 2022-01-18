@@ -16,7 +16,8 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     registerKey: {
-      type: Sequelize.UUID
+      type: Sequelize.UUID,
+      allowNull: false,
     }
   }, {});
 
