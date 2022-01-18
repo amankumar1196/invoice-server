@@ -4,11 +4,17 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     phone: {
-      type: Sequelize.INTEGER
+      type: Sequelize.DOUBLE
     },
     email: {
       type: Sequelize.STRING
     },
+    userId: {
+      type: Sequelize.INTEGER
+    },
+    registerKey: {
+      type: Sequelize.UUID
+    }
   }, {});
 
   Client.associate = function(models) {
@@ -20,6 +26,11 @@ module.exports = (sequelize, Sequelize) => {
     //   otherKey: "comapnyId"
     // });
 
+    Client.belongsTo(models.user, {
+      foreignKey: "userId",
+      as: "user"
+    });
+
     Client.hasMany(models.invoice, {
       as: "invoices"
     });
@@ -28,7 +39,7 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'addressId',
       constraints: false,
       scope: {
-        commentableType: 'client'
+        addressType: 'client'
       },
       as: "address"
     });

@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
     country: {
       type: Sequelize.STRING
     },
-    states: {
+    state: {
       type: Sequelize.STRING
     },
     pin_code: {

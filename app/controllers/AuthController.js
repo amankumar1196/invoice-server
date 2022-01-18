@@ -7,14 +7,18 @@ const Op = db.Sequelize.Op;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { v4: UUIDV4 } = require('uuid');
 
 exports.signup = (req, res) => {
   // Save User to Database
   User.create({
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
+    phone: req.body.phone,
+    password: bcrypt.hashSync(req.body.password, 8),
+    registerKey: UUIDV4()
   })
     .then(user => {
+      console.log(user);
       if (req.body.roles) {
         Role.findAll({
           where: {

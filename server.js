@@ -5,7 +5,7 @@ const app = express()
 const initial = require("./seed.js");
 
 db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
+  // console.log("Drop and re-sync db.");
   initial();
 });
 
@@ -23,8 +23,9 @@ app.use(express.urlencoded({ extended: true }));
 
 require('./app/routes/AuthRoutes')(app);
 require('./app/routes/InvoiceRoutes')(app);
+require('./app/routes/ClientRoutes')(app);
 
-app.get('/api/auth/signin', function (req, res) {
+app.get('/', function (req, res) {
   res.send('Hello World')
 })
 

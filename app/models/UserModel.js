@@ -14,6 +14,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     password: {
       type: Sequelize.STRING
+    },
+    registerKey: {
+      type: Sequelize.UUID
     }
   }, {});
 
@@ -35,11 +38,15 @@ module.exports = (sequelize, Sequelize) => {
       as: "invoices"
     });
 
+    User.hasMany(models.client, {
+      as: "clients"
+    });
+
     User.hasOne(models.address, {
       foreignKey: 'addressId',
       constraints: false,
       scope: {
-        commentableType: 'user'
+        addressType: 'user'
       },
       as: "address"
     });
