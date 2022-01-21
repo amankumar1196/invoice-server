@@ -15,5 +15,6 @@ module.exports = app => {
 
   router.post("/signin", controller.signin);
   router.get("/current_user", [authJwt.verifyToken], controller.currentUser);
+
   app.use('/api/v1/auth', router);
 };
