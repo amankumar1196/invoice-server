@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { verifySignUp } = require("../middleware");
+const { verifySignUp, authJwt } = require("../middleware");
 const controller = require("../controllers/AuthController");
 
 module.exports = app => {
@@ -14,6 +14,6 @@ module.exports = app => {
   );
 
   router.post("/signin", controller.signin);
-
+  router.get("/current_user", [authJwt.verifyToken], controller.currentUser);
   app.use('/api/v1/auth', router);
 };
