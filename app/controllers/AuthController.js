@@ -62,7 +62,7 @@ exports.signin = (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).send({
           accessToken: null,
-          message: "Invalid Password!"
+          message: "Invalid Credentials!"
         });
       }
 
@@ -86,4 +86,15 @@ exports.signin = (req, res) => {
     .catch(err => {
       res.status(500).json({ message: err.message });
     });
+};
+
+exports.currentUser = async (req, res) => {
+  try {
+    const { userId } = req
+    let user = await User.findByPk(userId, { include: ["address", "roles"] })
+    delete user.dataValues.password;
+    res.status(200).send(user);
+  } catch (err) {
+    res.status(500).send(err.message);
+  };
 };
