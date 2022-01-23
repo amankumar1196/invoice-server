@@ -9,38 +9,30 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { v4: UUIDV4 } = require('uuid');
 
-exports.signup = (req, res) => {
-  // Save User to Database
-  User.create({
-    email: req.body.email,
-    phone: req.body.phone,
-    password: bcrypt.hashSync(req.body.password, 8),
-    registerKey: UUIDV4()
-  })
-    .then(user => {
-      console.log(user);
-      if (req.body.roles) {
-        Role.findAll({
-          where: {
-            name: {
-              [Op.or]: req.body.roles
-            }
-          }
-        }).then(roles => {
-          user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
-          });
-        });
-      } else {
-        // user role = 1
-        user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
-        });
-      }
+exports.signup = async (req, res) => {
+  try{
+    // Save User to Database
+    const { email, phone, firstName, lastName, password, roles } = req.body
+    const user = await User.create({
+      email,
+      phone,
+      firstName,
+      lastName,
+      password: bcrypt.hashSync(password, 8),
+      registerKey: UUIDV4()
     })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
+
+    await user.setRoles([2]);
+
+    var token = jwt.sign({ id: user.id }, config.secret, {
+      expiresIn: 86400 // 24 hours
     });
+
+    res.status(200).send({user: { ...user.dataValues, accessToken: token } })
+
+  } catch(err) {
+      res.status(500).send({ message: err.message });
+    };
 };
 
 exports.signin = (req, res) => {
