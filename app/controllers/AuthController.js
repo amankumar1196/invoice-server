@@ -92,8 +92,16 @@ exports.currentUser = async (req, res) => {
   try {
     const { userId } = req
     let user = await User.findByPk(userId, { include: ["address", "roles"] })
-    delete user.dataValues.password;
-    res.status(200).send(user);
+    console.log(user);
+    if(user){
+      const roles = await user.getRoles();
+      var authorities = [];
+      for (let i = 0; i < roles.length; i++) {
+        authorities.push("ROLE_" + roles[i].name.toUpperCase());
+      }
+      delete user.dataValues.password;
+    }
+    res.status(200).send({user, roles: authorities});
   } catch (err) {
     res.status(500).send(err.message);
   };

@@ -46,18 +46,21 @@ exports.create = async (req, res) => {
   };
 };
 
-exports.update = (tutorial) => {
-  return Tutorial.create({
-    title: tutorial.title,
-    description: tutorial.description,
-  })
-    .then((tutorial) => {
-      console.log(">> Created tutorial: " + JSON.stringify(tutorial, null, 4));
-      return tutorial;
-    })
-    .catch((err) => {
-      console.log(">> Error while creating tutorial: ", err);
-    });
+exports.update = async (req, res) => {
+  const { id, name, email, phone, address } = req.body;
+  const transaction = await db.sequelize.transaction();
+  try {
+    await Client.update({ name, email, phone }, { where: { id }, transaction });
+    await Address.update(address, { where: { id: address.id }, transaction })
+    const client = await Client.findByPk(id, { include: ["address"], transaction });
+    await transaction.commit();
+
+    res.status(200).send(client);
+    
+  } catch (err) {
+    await transaction.rollback()
+    res.status(500).send(err.message);
+  };
 };
 
 exports.delete = async (req, res) => {
