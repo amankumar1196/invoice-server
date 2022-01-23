@@ -8,6 +8,7 @@ const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { v4: UUIDV4 } = require('uuid');
+const { getInclude } = require("../utils");
 
 exports.signup = async (req, res) => {
   try{
@@ -19,7 +20,10 @@ exports.signup = async (req, res) => {
       firstName,
       lastName,
       password: bcrypt.hashSync(password, 8),
-      registerKey: UUIDV4()
+      registerKey: UUIDV4(),
+      address: {}
+    },{
+      include: getInclude(req)
     })
 
     await user.setRoles([2]);
@@ -83,17 +87,21 @@ exports.signin = (req, res) => {
 exports.currentUser = async (req, res) => {
   try {
     const { userId } = req
-    let user = await User.findByPk(userId, { include: ["address", "roles"] })
-    console.log(user);
+    let user = await User.findByPk(userId, { include: getInclude(req) })
+
     if(user){
       const roles = await user.getRoles();
       var authorities = [];
       for (let i = 0; i < roles.length; i++) {
         authorities.push("ROLE_" + roles[i].name.toUpperCase());
       }
+
       delete user.dataValues.password;
+      delete user.dataValues.roles;
+      user.dataValues.userRoles = authorities
+      res.status(200).send(user);
     }
-    res.status(200).send({user, roles: authorities});
+
   } catch (err) {
     res.status(500).send(err.message);
   };

@@ -4,10 +4,10 @@ const Invoice = db.invoice;
 // const Comment = db.comments;
 const Client = db.client;
 const Address = db.address;
-
+const { getWhereQuery, getInclude } = require("../utils")
 exports.index = async (req, res) => {
   try {
-    const clients = await Client.findAll({ where: { userId: req.query.userId }, include: ["address"]})
+    const clients = await Client.findAll({ where: getWhereQuery(req), include: getInclude(req)})
     res.status(200).send(clients);
 
   } catch (err) {
