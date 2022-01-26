@@ -9,12 +9,10 @@ const { getWhereQuery, getInclude } = require("../utils")
 
 exports.index = async (req, res) => {
   try {
-    debugger
     const users = await User.findAll({ where: getWhereQuery(req), include: getInclude(req)})
     res.status(200).send(users);
 
   } catch (err) {
-    debugger
     res.status(500).send(err.message);
   };
 };
