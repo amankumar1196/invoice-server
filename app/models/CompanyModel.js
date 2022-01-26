@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING
     },
+    logo: {
+      type: Sequelize.STRING
+    },
     registerKey: {
       type: Sequelize.UUID,
       allowNull: false
@@ -32,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'addressId',
       constraints: false,
       scope: {
-        commentableType: 'company'
+        addressType: 'company'
       },
       as: "address"
     });
