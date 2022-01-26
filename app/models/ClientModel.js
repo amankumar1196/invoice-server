@@ -21,12 +21,6 @@ module.exports = (sequelize, Sequelize) => {
   Client.associate = function(models) {
     // associations can be defined 
 
-    // Client.belongsToMany(models.company, {
-    //   through: "user_companies",
-    //   foreignKey: "userId",
-    //   otherKey: "comapnyId"
-    // });
-
     Client.belongsTo(models.user, {
       foreignKey: "userId",
       as: "user"

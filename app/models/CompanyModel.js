@@ -9,9 +9,6 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING
     },
-    userId: {
-      type: Sequelize.INTEGER
-    },
     registerKey: {
       type: Sequelize.UUID,
       allowNull: false
@@ -20,12 +17,6 @@ module.exports = (sequelize, Sequelize) => {
 
   Company.associate = function(models) {
     // associations can be defined 
-
-    // Client.belongsToMany(models.company, {
-    //   through: "user_companies",
-    //   foreignKey: "userId",
-    //   otherKey: "comapnyId"
-    // });
 
     Company.belongsToMany(models.user, {
       through: "user_companies",

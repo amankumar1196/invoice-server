@@ -1,9 +1,6 @@
 const db = require("../models");
 const config = require("../config/auth.js");
 const User = db.user;
-const Role = db.role;
-
-const Op = db.Sequelize.Op;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -27,12 +24,18 @@ exports.signup = async (req, res) => {
     })
 
     await user.setRoles([2]);
+    let companies = []
+    user.getCompanies().then(roles => {
+      for (let i = 0; i < roles.length; i++) {
+        companies.push(roles[i]);
+      }
+    });
 
     var token = jwt.sign({ id: user.id }, config.secret, {
       expiresIn: 86400 // 24 hours
     });
 
-    res.status(200).send({user: { ...user.dataValues, accessToken: token } })
+    res.status(200).send({user: { ...user.dataValues, accessToken: token, companies } })
 
   } catch(err) {
       res.status(500).send({ message: err.message });
@@ -71,12 +74,20 @@ exports.signin = (req, res) => {
         for (let i = 0; i < roles.length; i++) {
           authorities.push("ROLE_" + roles[i].name.toUpperCase());
         }
-        res.status(200).send({
-          id: user.id,
-          email: user.email,
-          roles: authorities,
-          accessToken: token
-        });
+      });
+      let companies = []
+      user.getCompanies().then(roles => {
+        for (let i = 0; i < roles.length; i++) {
+          companies.push(roles[i]);
+        }
+      });
+
+      res.status(200).send({
+        id: user.id,
+        email: user.email,
+        roles: authorities,
+        accessToken: token,
+        companies
       });
     })
     .catch(err => {
