@@ -25,15 +25,15 @@ const initial = async () => {
     name: "admin"
   });
 
-  User.create({
-    email: "amankumar1196@gmail.com",
-    password: bcrypt.hashSync("123", 8),
-    firstName: "Aman",
-    lastName: "Kumar",
-    phone: "123456789",
-    role: [1],
-    registerKey: UUIDV4()
-  });
+  // User.create({
+  //   email: "amankumar1196@gmail.com",
+  //   password: bcrypt.hashSync("123", 8),
+  //   firstName: "Aman",
+  //   lastName: "Kumar",
+  //   phone: "123456789",
+  //   role: [1],
+  //   registerKey: UUIDV4()
+  // });
 
   // Client.create({
   //   email: "amankumar1196@gmail.com",
