@@ -1,14 +1,23 @@
 const db = require("../models");
-const InvoiceItems = db.invoice_item;
-const Invoice = db.invoice;
-// const Comment = db.comments;
+const Op = db.Sequelize.Op;
 const Client = db.client;
 const Address = db.address;
-const { getWhereQuery, getInclude } = require("../utils")
+const { getWhereQuery, getInclude, getOrderQuery, getResponseData, getPagination } = require("../utils")
+
 exports.index = async (req, res) => {
+  const { page, rpp, searchStr } = req.query;
+  const { limit, offset } = getPagination(page, rpp);
+  const condition = searchStr ? { [Op.or]: [ {name: { [Op.like]: `%${searchStr}%` }}, {email: { [Op.like]: `%${searchStr}%` }} ] } : null;
   try {
-    const clients = await Client.findAll({ where: getWhereQuery(req), include: getInclude(req)})
-    res.status(200).send(clients);
+    const data = await Client.findAndCountAll({ 
+      where: getWhereQuery(req, condition), 
+      order: getOrderQuery(req),
+      limit,
+      offset,
+      include: getInclude(req)
+    })
+
+    res.status(200).send(getResponseData(data, page, rpp));
 
   } catch (err) {
     res.status(500).send(err.message);
