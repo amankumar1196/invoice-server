@@ -7,7 +7,7 @@ const { getWhereQuery, getInclude, getOrderQuery, getResponseData, getPagination
 exports.index = async (req, res) => {
   const { page, rpp, searchStr } = req.query;
   const { limit, offset } = getPagination(page, rpp);
-  const condition = searchStr ? { [Op.or]: [ {name: { [Op.like]: `%${searchStr}%` }}, {email: { [Op.like]: `%${searchStr}%` }} ] } : null;
+  const condition = searchStr ? { [Op.or]: [ {name: { [Op.like]: `%${searchStr.trim()}%` }}, {email: { [Op.like]: `%${searchStr.trim()}%` }} ] } : null;
   try {
     const data = await Client.findAndCountAll({ 
       where: getWhereQuery(req, condition), 
