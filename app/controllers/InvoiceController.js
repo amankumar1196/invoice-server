@@ -99,16 +99,14 @@ exports.update = async (req, res) => {
   };
 };
 
-exports.delete = (tutorial) => {
-  return Tutorial.create({
-    title: tutorial.title,
-    description: tutorial.description,
-  })
-    .then((tutorial) => {
-      console.log(">> Created tutorial: " + JSON.stringify(tutorial, null, 4));
-      return tutorial;
-    })
-    .catch((err) => {
-      console.log(">> Error while creating tutorial: ", err);
-    });
+exports.delete = async (req, res) => {
+  const { id, archived } = req.body;
+  try {
+    await Invoice.update({ archived }, { where: { id } });
+    const invoice = await Invoice.findByPk(id);
+    res.status(200).send(invoice);
+
+  } catch (err) {
+    res.status(500).send(err.message);
+  };
 };

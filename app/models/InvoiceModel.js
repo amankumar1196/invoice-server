@@ -8,6 +8,10 @@ module.exports = (sequelize, Sequelize) => {
       values: ['pending', 'send', 'not_send'],
       defaultValue: 'pending'
     },
+    archived: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    },
     userId: {
       type: Sequelize.INTEGER
     },
