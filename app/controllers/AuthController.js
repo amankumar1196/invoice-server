@@ -75,10 +75,11 @@ exports.signin = (req, res) => {
           authorities.push("ROLE_" + roles[i].name.toUpperCase());
         }
       });
+
       let companies = []
       user.getCompanies().then(roles => {
         for (let i = 0; i < roles.length; i++) {
-          companies.push(roles[i]);
+          companies.push(roles[i].dataValues);
         }
       });
 
