@@ -2,16 +2,17 @@ const db = require("../models");
 const User = db.user;
 const Company = db.company;
 
-const { getInclude } = require("../utils");
+const { getInclude, getLogoUploadUrl } = require("../utils");
 
 exports.create = async (req, res) => {
   try{
-    const { email, phone, name, address, accountType, userId, registerKey } = req.body
+    const { email, phone, name, address, accountType, userId, registerKey, logo } = req.body
     const company = await Company.create({
       email,
       phone,
       name,
       registerKey,
+      logo: getLogoUploadUrl(logo, registerKey),
       address
     },{
       include: getInclude(req)
