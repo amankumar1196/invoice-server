@@ -13,7 +13,7 @@ getOrderQuery = (req) => {
   const { sortBy, sortDirection, sortModal } = req.query;
   let orderBys = [];
   sortModal ? 
-    orderBys.push([sortModal, sortBy, sortDirection])
+    orderBys.push([sortModal, sortBy.split('.')[1], sortDirection])
     :
     orderBys.push([sortBy, sortDirection])
 

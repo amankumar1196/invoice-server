@@ -1,17 +1,34 @@
+const moment = require("moment"); 
 const db = require("../models");
 const Op = db.Sequelize.Op;
 const InvoiceItems = db.invoice_item;
 const Invoice = db.invoice;
 const { getWhereQuery, getInclude, getOrderQuery, getResponseData, getPagination } = require("../utils")
 
+getDateFilterCondition = (val) => {
+  switch(val){
+    case "1": return {
+      [Op.lt]: moment(),
+      [Op.gt]: moment().format("DD-MM-YYYY")
+      }
+    case "2": return {
+      [Op.gte]: moment().subtract(7, 'days').toDate()
+    }
+    default: return {
+      [Op.lte]: moment()
+    }
+  }
+}
+
 exports.index = async (req, res) => {
-  const { page, rpp, searchStr } = req.query;
+  const { page, rpp, searchStr, extraParams } = req.query;
   const { limit, offset } = getPagination(page, rpp);
-  const condition = searchStr ? { [Op.or]: [ {name: { [Op.like]: `%${searchStr.trim()}%` }}, {'$client.name$': { [Op.like]: `%${searchStr.trim()}%` }} ] } : null;
+  let dateCondition = getDateFilterCondition(extraParams.createdAt);
+  const condition = searchStr ? { [Op.or]: [ {name: { [Op.like]: `%${searchStr.trim()}%` }}, {'$client.name$': { [Op.like]: `%${searchStr.trim()}%` }} ], status: {[Op.any]:  extraParams.status} }: null;
 
   try {
     const data = await Invoice.findAndCountAll({
-      where: getWhereQuery(req, condition), 
+      where: getWhereQuery(req, {...condition, createdAt: dateCondition}), 
       order: getOrderQuery(req),
       limit,
       offset,
