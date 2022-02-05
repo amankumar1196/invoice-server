@@ -3,7 +3,9 @@ const db = require("../models");
 const Op = db.Sequelize.Op;
 const InvoiceItems = db.invoice_item;
 const Invoice = db.invoice;
-const { getWhereQuery, getInclude, getOrderQuery, getResponseData, getPagination } = require("../utils")
+const Client = db.client;
+const Company = db.company;
+const { getWhereQuery, getInclude, getOrderQuery, getResponseData, getPagination, generatePdfFromUrl } = require("../utils")
 
 getDateFilterCondition = (val) => {
   switch(val){
@@ -100,6 +102,9 @@ exports.update = async (req, res) => {
   const transaction = await db.sequelize.transaction();
   try {
     await Invoice.update({ name, clientId, companyId, userId, }, { where: { id }, transaction });
+
+    await InvoiceItems.destroy({ where: { invoiceId: id }})
+
     let mapRecords = invoiceItems.map(item => { return { ...item, invoiceId: id }})
     await InvoiceItems.bulkCreate(
       mapRecords,
@@ -127,3 +132,48 @@ exports.delete = async (req, res) => {
     res.status(500).send(err.message);
   };
 };
+
+exports.generatePdf = async (req, res) => {
+  try {
+    let fileName = `${new Date().getTime()}-${req.body.data.client.registerKey}`
+    const url = await generatePdfFromUrl(req.body.data, fileName)
+    
+    res.set({ 'Content-Type': 'application/pdf' })
+    req.body.data.type === "download" ?
+      res.download(`public/pdfs/${fileName}.pdf`)
+      :
+      res.send(url)
+    
+  } catch (err) {
+    console.log(err);
+    res.send(err)
+  }
+};
+
+exports.downloadPDF = async (req, res) => {
+  const { id } = req.params
+  let pdfData = {}
+  try {
+    let data = await Invoice.findByPk(id, {
+      include: [
+        { model: Client, as: 'client', include: ["address"]},
+        { model: Company, as: 'company', include: ["address"]},
+        { model: InvoiceItems, as: 'invoice_items'}
+      ]})
+
+      pdfData = {
+      client: data.client,
+      company: data.company,
+      invoiceItems: { name: data.name, invoiceItems: data.invoice_items },
+    }
+    
+    let fileName = `${new Date().getTime()}-${data.client.registerKey}`
+    await generatePdfFromUrl(pdfData, fileName)
+
+    res.set({ 'Content-Type': 'application/pdf' })
+    res.download(`public/pdfs/${fileName}.pdf`)
+
+  } catch (err) {
+      res.status(500).send(err.message);
+  };
+}

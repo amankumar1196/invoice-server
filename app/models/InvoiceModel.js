@@ -18,6 +18,9 @@ module.exports = (sequelize, Sequelize) => {
     clientId: {
       type: Sequelize.INTEGER
     },
+    companyId: {
+      type: Sequelize.INTEGER
+    },
     registerKey: {
       type: Sequelize.UUID,
       allowNull: false
@@ -37,6 +40,11 @@ module.exports = (sequelize, Sequelize) => {
     Invoice.belongsTo(models.client, {
       foreignKey: "clientId",
       as: "client"
+    });
+
+    Invoice.belongsTo(models.company, {
+      foreignKey: "companyId",
+      as: "company"
     });
 
     Invoice.hasMany(models.invoice_item, {

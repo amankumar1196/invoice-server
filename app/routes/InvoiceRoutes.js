@@ -11,6 +11,9 @@ module.exports = app => {
   router.post("/", authJwt.verifyToken, controller.create);
   router.put("/:id", authJwt.verifyToken, controller.update);
   router.delete("/:id", authJwt.verifyToken, controller.delete);
-
+  
+  router.get("/:id/download-pdf", authJwt.verifyToken, controller.downloadPDF);
+  router.post("/generate-invoice-pdf", authJwt.verifyToken, controller.generatePdf);
+  
   app.use('/api/v1/invoices', router);
 };
